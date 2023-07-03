@@ -31,10 +31,12 @@ public class UsuarioService {
 		if (idArea!=null) {
 			usuario.getArea().setId(idArea);
 		}
-		*/ 
+		*/
+		/*
 		usuario.setArea(areaRepository.save(usuario.getArea()));								
 		usuario.setPersona(personaRepository.save(usuario.getPersona()));
 		usuario.setRoles(rolRepository.saveAll(usuario.getRoles()));
+		*/
 		return usuarioRepository.save(usuario);
 	}
 	
