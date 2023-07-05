@@ -24,7 +24,7 @@ public class Usuario {
 	@ManyToOne(cascade=CascadeType.ALL)
 	private Area area;
 	
-	@ManyToMany(cascade=CascadeType.ALL)
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<Rol> roles;
 
 }

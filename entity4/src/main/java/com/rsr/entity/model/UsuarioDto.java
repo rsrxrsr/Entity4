@@ -14,6 +14,7 @@ public class UsuarioDto extends Usuario {
 
 	public UsuarioDto (Usuario usuario) {
 		setUsuario(usuario.getUsuario());
+		setPassword(usuario.getPassword());
 		setArea(usuario.getArea());
 		setPermisos(usuario.getRoles());
 	}

@@ -1,6 +1,7 @@
 package com.rsr.entity.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class UsuarioController {
 	}
 
 	@GetMapping(path="/findByUsuario")
-	Usuario findByUsuario(@RequestParam("usuario") String usuario) {
+	Optional<Usuario> findByUsuario(@RequestParam("usuario") String usuario) {
 		return usuarioRepository.findByUsuario(usuario);
 	}
 

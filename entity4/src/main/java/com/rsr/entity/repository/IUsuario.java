@@ -1,6 +1,7 @@
 package com.rsr.entity.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -11,7 +12,7 @@ import com.rsr.entity.model.Usuario;
 
 public interface IUsuario extends JpaRepository<Usuario, Long> {
 	
-	abstract Usuario findByUsuario(String usuario);
+	abstract Optional<Usuario> findByUsuario(String usuario);
 	abstract Usuario findByUsuarioAndPasswordAndEstatus(String usuario, String password, Integer estatus);
 	abstract List<Usuario> findByUsuarioOrPassword(String usuario, String password);
 
