@@ -13,7 +13,7 @@ import com.rsr.entity.model.Usuario;
 public interface IUsuario extends JpaRepository<Usuario, Long> {
 	
 	abstract Optional<Usuario> findByUsuario(String usuario);
-	abstract Usuario findByUsuarioAndPasswordAndEstatus(String usuario, String password, Integer estatus);
+	abstract Optional<Usuario> findByUsuarioAndPasswordAndEstatus(String usuario, String password, Integer estatus);
 	abstract List<Usuario> findByUsuarioOrPassword(String usuario, String password);
 
 	@Query (

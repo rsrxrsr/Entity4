@@ -59,13 +59,13 @@ public class UsuarioController {
 	}
 
 	@GetMapping(path="/login")
-	Usuario login(@RequestParam("usuario") String usuario, @RequestParam("password") String password) {
-		return new UsuarioDto(usuarioService.login(new UsuarioDto(usuario, password)));
+	UsuarioDto login(@RequestParam("usuario") String usuario, @RequestParam("password") String password) {
+		return usuarioService.login(new UsuarioDto(usuario, password));
 	}
 
 	@PostMapping(path="/login")
 	UsuarioDto login(@RequestBody Usuario usuario) {
-		return new UsuarioDto(usuarioService.login(usuario));
+		return usuarioService.login(usuario);
 	}
 	
 	@PostMapping()
