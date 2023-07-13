@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 import com.rsr.entity.model.FuncionDto;
 import com.rsr.entity.repository.IFuncion;
@@ -41,16 +43,19 @@ public class SecurityConfig {
     private IFuncion funcionRepository;
 
     @Bean
-    SecurityFilterChain web(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
     	System.out.println("****** Estamos Aqui !!!");
     	http
     	   .csrf(csrf -> csrf.disable())
     	   .httpBasic(withDefaults())
     	   .formLogin(withDefaults()) 
     	   .logout(withDefaults())
+    	   .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    	   .addFilterBefore(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
         ;
     	http
  	   		.authorizeHttpRequests(authorize -> { 
+ 	   			authorize.requestMatchers("/usuario/login/**").permitAll();
  	            funcionRepository.findAll()
  	               .stream().map(FuncionDto::new).collect(Collectors.toList())
  	               .forEach(funcion ->
@@ -67,4 +72,9 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+    @Bean
+    SecurityKey securityKey() {
+		return new SecurityKey();
+	}
+    
 }

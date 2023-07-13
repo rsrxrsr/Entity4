@@ -1,21 +1,22 @@
 package com.rsr.security;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 //import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -31,31 +32,31 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 	
 	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";
-	private final String SECRET = getProperty("jwt.key");
+	private SecurityKey securityKey = new SecurityKey();
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 		throws ServletException, IOException  {
 		try {
-			System.out.println("*** Security inFilter");
+			System.out.println("*** SecurityFilter");
 			if (existeJWTToken(request)) {
-				System.out.println("*** Security Filter inClaims()");
+				System.out.println("*** existeToken");
 				Claims claims = validateToken(request);
 				if (claims.get("authorities") != null) {
 					setUpSpringAuthentication(claims);
-					System.out.println("*** Security Filter setHeader()");
+					System.out.println("*** Claims: "+claims);
 				} else {
-					//SecurityContextHolder.clearContext();
+					SecurityContextHolder.clearContext();
 				}
 			} else {
-					//SecurityContextHolder.clearContext();
+					SecurityContextHolder.clearContext();
 			}
-			System.out.println("*** Security Filter doFilter()");
+			System.out.println("*** SecurityFilter doFilter()");
 			chain.doFilter(request, response);
 		} catch (UnsupportedJwtException | MalformedJwtException e) {
+			System.out.println("*** Reject");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-			//return;
 		}
 	}
 	
@@ -66,7 +67,7 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 
 	private Claims validateToken(HttpServletRequest request) {
 		String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-		return  (Claims) Jwts.parserBuilder().setSigningKey(SECRET.getBytes()).build().parse(jwtToken).getBody();
+		return  (Claims) Jwts.parserBuilder().setSigningKey(securityKey.getSecretKey()).build().parse(jwtToken).getBody();
 //		return  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
 	}
 
@@ -75,27 +76,23 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 	 * @param claims
 	 */
 	private void setUpSpringAuthentication(Claims claims) {
-		@SuppressWarnings("unchecked")
-		List<String> authorities = (List<String>) claims.get("authorities");
+		//
+		//claims.get("authorities", List<String> requiredType);
+        //List<String> authorities = (List<String>) claims.get("authorities");
+		//UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+		//		claims.getSubject(), null,
+		//		authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
 		
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-				claims.getSubject(), null,
-				authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-		
-		SecurityContextHolder.getContext().setAuthentication(auth);
+		System.out.println(claims.get("authorities"));
+		Collection<? extends GrantedAuthority> authorities = 
+				Arrays.stream(claims.get("authorities").toString().split(","))
+				.map(SimpleGrantedAuthority::new).collect(Collectors.toList());		
+		System.out.println(authorities);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+				claims.getSubject(), null, authorities);
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		System.out.println(authentication);
 	}
-		
-	//For Problems with @VALUE and testing using Property
-	private String getProperty(String property) {
-		String value="";
-		try {
-			Properties properties = new Properties();
-			properties.load(getClass().getResourceAsStream("/application.properties"));
-			value = properties.getProperty(property);		
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return value;
-	}
-	
+			
 }
