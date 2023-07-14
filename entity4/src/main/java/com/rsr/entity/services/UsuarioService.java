@@ -3,10 +3,11 @@ package com.rsr.entity.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.rsr.entity.model.Usuario;
 import com.rsr.entity.model.UsuarioDto;
@@ -69,7 +70,7 @@ public class UsuarioService implements UserDetailsService {
 		UsuarioDto user = new UsuarioDto(usuarioRepository.findByUsuario(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Could not find the user: " + username)));
 		System.out.println("*** Usuario: "+username+" Password: " + user.getPassword()+" Permisos: "+user.getPermisos());
-	    return new org.springframework.security.core.userdetails.User(
+	    return new User(
 	    		user.getUsuario(), passwordEncoder.encode(user.getPassword()),
 	            true, true, true, true,
 	            AuthorityUtils.createAuthorityList(user.getPermisos()));
