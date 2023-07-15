@@ -1,8 +1,8 @@
 package com.rsr.security;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 //import org.springframework.core.annotation.Order;
@@ -32,7 +32,7 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 	
 	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";
-	private SecurityKey securityKey = new SecurityKey();
+	private JwtUtil jwtUtil = new JwtUtil();
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -44,17 +44,13 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 				Claims claims = validateToken(request);
 				if (claims.get("authorities") != null) {
 					setUpSpringAuthentication(claims);
-					System.out.println("*** Claims: "+claims);
-				} else {
-					SecurityContextHolder.clearContext();
-				}
-			} else {
-					SecurityContextHolder.clearContext();
-			}
-			System.out.println("*** SecurityFilter doFilter()");
+					System.out.println("*** setAuthentication: "+claims);
+				} 
+			} 	//  SecurityContextHolder.clearContext();			
 			chain.doFilter(request, response);
+			System.out.println("*** End SecurityFilter");
 		} catch (UnsupportedJwtException | MalformedJwtException e) {
-			System.out.println("*** Reject");
+			System.out.println("*** Exception");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
@@ -67,7 +63,7 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 
 	private Claims validateToken(HttpServletRequest request) {
 		String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-		return  (Claims) Jwts.parserBuilder().setSigningKey(securityKey.getSecretKey()).build().parse(jwtToken).getBody();
+		return  (Claims) Jwts.parserBuilder().setSigningKey(jwtUtil.getSecretKey()).build().parse(jwtToken).getBody();
 //		return  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
 	}
 
@@ -77,22 +73,19 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 	 */
 	private void setUpSpringAuthentication(Claims claims) {
 		//
+		System.out.println("claims.get="+claims.get("authorities"));
+
 		//claims.get("authorities", List<String> requiredType);
-        //List<String> authorities = (List<String>) claims.get("authorities");
-		//UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-		//		claims.getSubject(), null,
-		//		authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-		
-		System.out.println(claims.get("authorities"));
-		Collection<? extends GrantedAuthority> authorities = 
-				Arrays.stream(claims.get("authorities").toString().split(","))
-				.map(SimpleGrantedAuthority::new).collect(Collectors.toList());		
-		System.out.println(authorities);
+		List<String> auths = (List) claims.get("authorities");
+		Collection<? extends GrantedAuthority> authorities =
+				auths.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+				
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 				claims.getSubject(), null, authorities);
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		System.out.println(authentication);
+
+		System.out.println("AuthsA="+SecurityContextHolder.getContext().getAuthentication());
 	}
 			
 }

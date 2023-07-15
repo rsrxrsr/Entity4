@@ -73,6 +73,7 @@ public class SecurityConfig {
     	configuration.setAllowedOrigins(Arrays.asList("*"));
     	configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
     	configuration.setAllowedHeaders(Arrays.asList("*"));
+    	configuration.setAllowCredentials(true);
     	configuration.applyPermitDefaultValues();
     	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); 
     	source.registerCorsConfiguration("/**",configuration);
@@ -91,7 +92,7 @@ public class SecurityConfig {
     	   //.formLogin(withDefaults()) 
     	   //.logout(withDefaults())
     	   .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    	   .addFilterBefore(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
+    	   .addFilterAfter(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
         ;
     	http
  	   		.authorizeHttpRequests(authorize -> { 
@@ -113,8 +114,8 @@ public class SecurityConfig {
 	}
 
     @Bean
-    SecurityKey securityKey() {
-		return new SecurityKey();
+    JwtUtil jwtUtil() {
+		return new JwtUtil();
 	}
     
 }

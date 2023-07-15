@@ -2,7 +2,6 @@ package com.rsr.entity.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,13 +14,13 @@ import com.rsr.entity.repository.IArea;
 import com.rsr.entity.repository.IPersona;
 import com.rsr.entity.repository.IRol;
 import com.rsr.entity.repository.IUsuario;
-import com.rsr.security.SecurityKey;
+import com.rsr.security.JwtUtil;
 
 @Service
 public class UsuarioService implements UserDetailsService {
 
 	@Autowired	
-	SecurityKey securityKey;
+	JwtUtil jwtUtil;
 	@Autowired	
 	BCryptPasswordEncoder passwordEncoder;
 	@Autowired
@@ -60,7 +59,7 @@ public class UsuarioService implements UserDetailsService {
 	public UsuarioDto login(Usuario usuario) {
 		UsuarioDto usuarioDto = new UsuarioDto(usuarioRepository.findByUsuarioAndPasswordAndEstatus(usuario.getUsuario(), usuario.getPassword(), 1)
 			      .orElseThrow(() -> new UsernameNotFoundException("Could not find the user: " + usuario)));
-        usuarioDto.setPassword(securityKey.getToken(usuarioDto));  			
+        usuarioDto.setPassword(jwtUtil.getToken(usuarioDto));  			
 		return usuarioDto;
 	} 
 
@@ -72,8 +71,7 @@ public class UsuarioService implements UserDetailsService {
 		System.out.println("*** Usuario: "+username+" Password: " + user.getPassword()+" Permisos: "+user.getPermisos());
 	    return new User(
 	    		user.getUsuario(), passwordEncoder.encode(user.getPassword()),
-	            true, true, true, true,
-	            AuthorityUtils.createAuthorityList(user.getPermisos()));
+	            true, true, true, true, user.getGrantedAuthority());
 	}
 	
 } // End Class

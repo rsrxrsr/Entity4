@@ -12,6 +12,7 @@ import com.rsr.entity.model.UsuarioDto;
 import com.rsr.entity.repository.IUsuario;
 import com.rsr.entity.services.UsuarioService;
 
+//@CrossOrigin
 @RestController
 @RequestMapping("/usuario")
 public class UsuarioController {

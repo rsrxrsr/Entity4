@@ -4,25 +4,20 @@ import java.io.IOException;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 
 import javax.crypto.spec.SecretKeySpec;
-
-//import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 
 import com.rsr.entity.model.UsuarioDto;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-public class SecurityKey {
+public class JwtUtil {
 
 	//@Value("${jwt.key}")
 	//private String SECRETo;
-	private final String SECRET = getProperty("jwt.key");
+	private final String SECRET = getProperty("jwt.secret");
 
 	private String getProperty(String property) {
 		String value="";
@@ -44,20 +39,12 @@ public class SecurityKey {
 	}
 		
 	public String getToken(UsuarioDto user) {
-		System.out.println("*** getToken() Permisos: "+user.getPermisos()+" :End");		
-				
-		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-				.commaSeparatedStringToAuthorityList(user.getPermisos());
-
-/*      AuthorityUtils.createAuthorityList(user.getPermisos())
-//		grantedAuthorities.stream()
-			.map(GrantedAuthority::getAuthority)
-			.collect(Collectors.toList()))
-*/		
+		System.out.println("*** getToken Permisos= "+user.getPermisos());		
+								
 		String token = Jwts.builder()
 				.setId("entityJWT")
 				.setSubject(user.getUsuario())
-				.claim("authorities", grantedAuthorities)
+				.claim("authorities", user.getAuthorities())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 10*60*1000))
 				.signWith(getSecretKey(), SignatureAlgorithm.HS512)
@@ -65,5 +52,5 @@ public class SecurityKey {
 
 		return token;				
 	}
-
+	
 }
