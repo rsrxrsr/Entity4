@@ -14,7 +14,7 @@ import com.rsr.entity.repository.IArea;
 import com.rsr.entity.repository.IPersona;
 import com.rsr.entity.repository.IRol;
 import com.rsr.entity.repository.IUsuario;
-import com.rsr.security.JwtUtil;
+import com.rsr.security.jwt.JwtUtil;
 
 @Service
 public class UsuarioService implements UserDetailsService {

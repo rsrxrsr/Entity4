@@ -1,4 +1,4 @@
-package com.rsr.security;
+package com.rsr.security.jwt;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -60,8 +60,7 @@ public class SecurityConfig {
         });
     }
 */
-	
-	
+		
 /*
 //  Security Dynamic Code
 */
@@ -82,16 +81,17 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-    	System.out.println("****** Estamos Aqui !!!");
+    	System.out.println("****** AuthorizationFilter !!!");
     	http
     	   .cors(withDefaults())
     	   .csrf(csrf -> csrf.disable()) // permite acceso a todos los metodos
            .exceptionHandling(handling -> handling.authenticationEntryPoint((rq, rs, er) -> {
            		rs.sendError(HttpServletResponse.SC_UNAUTHORIZED, er.getMessage());}))
-    	   //.httpBasic(withDefaults())
+    	   .httpBasic(withDefaults())
     	   //.formLogin(withDefaults()) 
     	   //.logout(withDefaults())
     	   .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    	   //.addFilterBefore(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
     	   .addFilterAfter(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
         ;
     	http

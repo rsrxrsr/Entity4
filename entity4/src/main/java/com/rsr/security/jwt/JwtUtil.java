@@ -1,4 +1,4 @@
-package com.rsr.security;
+package com.rsr.security.jwt;
 
 import java.io.IOException;
 import java.security.Key;
@@ -8,15 +8,15 @@ import java.util.Properties;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import com.rsr.entity.model.UsuarioDto;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import com.rsr.entity.model.UsuarioDto;
+
 public class JwtUtil {
 
-	//@Value("${jwt.key}")
-	//private String SECRETo;
+	//@Value("${jwt.secret}")
+	//private String SECRET;
 	private final String SECRET = getProperty("jwt.secret");
 
 	private String getProperty(String property) {

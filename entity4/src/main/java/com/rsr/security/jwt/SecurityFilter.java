@@ -1,4 +1,4 @@
-package com.rsr.security;
+package com.rsr.security.jwt;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -27,11 +27,12 @@ import jakarta.servlet.http.HttpServletResponse;
  * Servlet Filter extends OncePerRequestFilter 
  */
 //@Order(value=1)
-@WebFilter("/securityFilter")
+@WebFilter("/**")
 public class SecurityFilter  extends OncePerRequestFilter  {
 	
 	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";
+
 	private JwtUtil jwtUtil = new JwtUtil();
 
 	@Override
@@ -75,7 +76,7 @@ public class SecurityFilter  extends OncePerRequestFilter  {
 		//
 		System.out.println("claims.get="+claims.get("authorities"));
 
-		//claims.get("authorities", List<String> requiredType);
+		// List<String> auths = (List<String>) claims.get("authorities", List.class); // ,Class requiredType
 		List<String> auths = (List) claims.get("authorities");
 		Collection<? extends GrantedAuthority> authorities =
 				auths.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
