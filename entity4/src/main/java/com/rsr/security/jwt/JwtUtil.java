@@ -8,16 +8,23 @@ import java.util.Properties;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import com.rsr.entity.model.UsuarioDto;
 
+@Component
 public class JwtUtil {
 
-	//@Value("${jwt.secret}")
-	//private String SECRET;
-	private final String SECRET = getProperty("jwt.secret");
+	@Value("${jwt.secret}")
+	private String SECRET;
+	
+	public JwtUtil() {
+		SECRET = (SECRET == null) ? getProperty("jwt.secret") : SECRET; 			
+	}
 
 	private String getProperty(String property) {
 		String value="";

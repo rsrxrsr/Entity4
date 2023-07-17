@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 //@Order(value=1)
 @WebFilter("/**")
-public class SecurityFilter  extends OncePerRequestFilter  {
+public class JwtFilter  extends OncePerRequestFilter  {
 	
 	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";

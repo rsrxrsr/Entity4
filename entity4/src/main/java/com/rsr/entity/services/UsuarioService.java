@@ -32,7 +32,6 @@ public class UsuarioService implements UserDetailsService {
 	@Autowired
 	IUsuario usuarioRepository;
 	
-	public Usuario save(Usuario usuario) {
 		/*
 		Long idArea = areaRepository.findByArea(usuario.getArea().getArea()).getId();
 		if (idArea!=null) {
@@ -43,6 +42,7 @@ public class UsuarioService implements UserDetailsService {
 		usuario.setPersona(personaRepository.save(usuario.getPersona()));
 		usuario.setRoles(rolRepository.saveAll(usuario.getRoles()));
 		*/
+	public Usuario save(Usuario usuario) {
 		return usuarioRepository.save(usuario);
 	}
 	

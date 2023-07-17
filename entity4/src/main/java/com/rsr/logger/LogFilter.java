@@ -6,16 +6,27 @@ import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.sql.Timestamp;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
+
+import com.rsr.entity.model.Log;
+import com.rsr.entity.repository.ILog;
+
+@Component("loggerFilter")
 @WebFilter(urlPatterns = {"/*", "/restapi/*"})
 public class LogFilter implements Filter {
-    private final static Logger logger = LoggerFactory.getLogger("AppLog"); 
+    private final static Logger logger = LoggerFactory.getLogger("AppLog");
+
+    @Autowired
+    ILog logRepository;
+    
     @Override
     public void doFilter(ServletRequest request,
                          ServletResponse response,
@@ -28,10 +39,19 @@ public class LogFilter implements Filter {
         logger.info(String.format("*** Request User: %s :METHOD: %s :URI: %s", getUsername(req.getUserPrincipal()), req.getMethod(), req.getRequestURI()));    
         chain.doFilter(requestWrapper, responseWrapper);
         logger.info("*** Response Status Code: " + ((HttpServletResponse) response).getStatus());        
+        Log log = new Log(
+        		new Timestamp(System.currentTimeMillis()),
+        		req.getMethod(),
+        		req.getRequestURI(),
+        		getUsername(req.getUserPrincipal()),
+        		((HttpServletResponse) response).getStatus()
+        		);
         if (req.getMethod().contentEquals("POST")) {
         	logger.info("*** ResponseBody:" + getResponsePayload(responseWrapper));
+    		log.setBody(getResponsePayload(responseWrapper));
         }
-    	responseWrapper.copyBodyToResponse();
+        logRepository.save(log); 
+        responseWrapper.copyBodyToResponse();
     }
 
     public String getResponsePayload(ContentCachingResponseWrapper responseWrapper)

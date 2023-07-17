@@ -1,10 +1,9 @@
 package com.rsr.security.basic;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +19,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.rsr.entity.model.FuncionDto;
 import com.rsr.entity.repository.IFuncion;
 import com.rsr.security.jwt.JwtUtil;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -46,22 +43,7 @@ public class SecurityConfig {
 */
 
 /*
-    @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(username -> {
-        	UsuarioDto user = new UsuarioDto(userRepository.findByUsuario(username)
-        				.orElseThrow(() -> new UsernameNotFoundException("Could not find the user: " + username)));
-        	System.out.println("*** Usuario: "+username+" Password: " + user.getPassword()+" Permisos: "+user.getPermisos());
-            return new org.springframework.security.core.userdetails.User(
-            		user.getUsuario(), passwordEncoder().encode(user.getPassword()),
-                    true, true, true, true,
-                    AuthorityUtils.createAuthorityList(user.getPermisos()));
-        });
-    }
-*/
-		
-/*
-//  Security Dynamic Code
+*  Security Dynamic Code
 */
 	@Autowired
     private IFuncion funcionRepository;
@@ -84,9 +66,6 @@ public class SecurityConfig {
     	http
     	   .cors(withDefaults())
     	   .csrf(csrf -> csrf.disable()) // permite acceso a todos los metodos
-           .exceptionHandling(handling -> handling.authenticationEntryPoint((rq, rs, er) -> {
-           		rs.sendError(HttpServletResponse.SC_UNAUTHORIZED, er.getMessage());}))
-    	   .httpBasic(withDefaults())
     	   .formLogin(withDefaults()) 
     	   .logout(withDefaults())
         ;
@@ -108,10 +87,10 @@ public class SecurityConfig {
     BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-    
+//   
     @Bean
     JwtUtil jwtUtil() {
 		return new JwtUtil();
 	}
-      
+//      
 }

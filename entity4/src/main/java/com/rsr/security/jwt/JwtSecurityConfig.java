@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class JwtSecurityConfig {
 	
 /*  Basic Security Hard Code  
     @Bean
@@ -86,13 +86,14 @@ public class SecurityConfig {
     	   .cors(withDefaults())
     	   .csrf(csrf -> csrf.disable()) // permite acceso a todos los metodos
            .exceptionHandling(handling -> handling.authenticationEntryPoint((rq, rs, er) -> {
-           		rs.sendError(HttpServletResponse.SC_UNAUTHORIZED, er.getMessage());}))
+           		rs.sendError(HttpServletResponse.SC_UNAUTHORIZED, er.getMessage());
+           		System.out.println(er.getMessage());}))
     	   .httpBasic(withDefaults())
     	   //.formLogin(withDefaults()) 
     	   //.logout(withDefaults())
     	   .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
     	   //.addFilterBefore(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
-    	   .addFilterAfter(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
+    	   .addFilterAfter(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)  // <= JWT Filter
         ;
     	http
  	   		.authorizeHttpRequests(authorize -> { 
@@ -113,9 +114,4 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
-    @Bean
-    JwtUtil jwtUtil() {
-		return new JwtUtil();
-	}
-    
 }
