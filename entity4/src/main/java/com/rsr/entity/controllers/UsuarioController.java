@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,9 +44,9 @@ public class UsuarioController {
 		return usuarioRepository.findByUsuarioOrPassword(valor, valor);
 	}
 
-	@GetMapping(path="/queryByEstatus")
-	List<Usuario> queryByestatus(@RequestParam("estatus") Integer estatus) {
-		return usuarioRepository.queryByEstatus(estatus);
+	@GetMapping(path="/hqlByEstatus")
+	List<Usuario> hqlByEstatus(@RequestParam("estatus") Integer estatus) {
+		return usuarioRepository.hqlByEstatus(estatus);
 	}
 	
 	@GetMapping(path="/sqlByEstatus")
@@ -73,7 +74,17 @@ public class UsuarioController {
     Usuario save(@RequestBody Usuario usuario) {    	
     	return usuarioService.save(usuario);
     }
-    
+
+	@PostMapping(path="/create")
+    ResponseEntity<Usuario> create(@RequestBody Usuario usuario) {    	
+    	return usuarioService.create(usuario);
+    }
+
+	@PutMapping()
+    ResponseEntity<Usuario> update(@RequestBody Usuario usuario) {    	
+    	return usuarioService.update(usuario);
+    }
+	
     @DeleteMapping(path="/{id}")
     Boolean deleteById(@PathVariable("id") Long id) {
     	return usuarioService.deleteById(id);

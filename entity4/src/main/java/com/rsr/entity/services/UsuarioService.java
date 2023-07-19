@@ -1,6 +1,8 @@
 package com.rsr.entity.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,6 +46,23 @@ public class UsuarioService implements UserDetailsService {
 		*/
 	public Usuario save(Usuario usuario) {
 		return usuarioRepository.save(usuario);
+	}
+	
+	public ResponseEntity<Usuario> create(Usuario usuario) {
+		if (usuario.getId() != null && usuarioRepository.existsById(usuario.getId()))
+			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(usuario);
+		try {
+			return ResponseEntity.ok().body(usuarioRepository.save(usuario));
+		} catch(Exception er) {
+			System.out.printf("Error en BD usuarioService(57) %s", er);
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(usuario);
+		}
+	}
+
+	public ResponseEntity<Usuario> update(Usuario usuario) {
+		if (usuario.getId() == null || !usuarioRepository.existsById(usuario.getId()))
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(usuario);
+		return ResponseEntity.ok().body(usuarioRepository.save(usuario));
 	}
 	
 	public boolean deleteById(Long id) {

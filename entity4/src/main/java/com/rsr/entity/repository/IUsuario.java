@@ -19,7 +19,7 @@ public interface IUsuario extends JpaRepository<Usuario, Long> {
 	@Query (
 			value="SELECT u FROM Usuario u WHERE u.estatus = :estatus"
 	)
-	List<Usuario> queryByEstatus(@Param("estatus") Integer estatus);
+	List<Usuario> hqlByEstatus(@Param("estatus") Integer estatus);
 
 	@Query (
 			value="SELECT u.* FROM Usuario u WHERE u.estatus = :estatus",

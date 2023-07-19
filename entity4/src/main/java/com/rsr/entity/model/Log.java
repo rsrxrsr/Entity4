@@ -11,11 +11,11 @@ import lombok.Data;
 @Data
 public class Log {
 	@Id
-	private Timestamp  timestamp;
-	private String method;
+	private Timestamp fechaHr;
+	private String metodo;
 	private String uri;
 	private String usuario;
-	private Integer status;
+	private Integer estatus;
 	@Column(length=1024)	
 	private String body;
 //
@@ -24,17 +24,17 @@ public class Log {
 	}
 	
 	public Log(
-		Timestamp  timestamp,
-		String method,
-		String url,
+		Timestamp fechaHr,
+		String metodo,
+		String uri,
 		String usuario,
-		Integer status)
+		Integer estatus)
 	{
-		setTimestamp(timestamp);
-		setMethod(method);
-		setUri(url);
+		setFechaHr(fechaHr);
+		setMetodo(metodo);
+		setUri(uri);
 		setUsuario(usuario);
-		setStatus(status);				
+		setEstatus(estatus);				
 	}
 //	
 }

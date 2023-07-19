@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+//import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class UsuarioDto extends Usuario {
 		
@@ -32,8 +33,7 @@ public class UsuarioDto extends Usuario {
 	}
 
 	public Collection<? extends GrantedAuthority> getGrantedAuthority() {
-		return getRoles().stream()
-			.map(rol-> new SimpleGrantedAuthority(rol.getRol())).collect(Collectors.toList());
+		return AuthorityUtils.createAuthorityList(this.getPermisos());
 	}
 				
 	/*	Get Authorities			
@@ -47,18 +47,21 @@ public class UsuarioDto extends Usuario {
 		.map(GrantedAuthority::getAuthority)
 		.collect(Collectors.toList());
 
+	public Collection<? extends GrantedAuthority> getGrantedAuthority() {
+		//return getRoles().stream()
+		//	.map(rol-> new SimpleGrantedAuthority(rol.getRol())).collect(Collectors.toList());
+    }
+
 	public List<String> getAuthorities() {
 		return
 			user.getAuthorities().stream()
 			.map(GrantedAuthority::getAuthority)
 			.collect(Collectors.toList());
 	}
-
-	*/
-	
-	/*		
+    
+    getPermisos() { 
 	permisos=roles.get(0).getRol();
-	for (int i=1;i<roles.size();i++) permisos += ", " + roles.get(i).getRol();
+	for (int i=1;i<roles.size();i++) permisos += ", " + roles.get(i).getRol(); }
 	*/
 		
 }

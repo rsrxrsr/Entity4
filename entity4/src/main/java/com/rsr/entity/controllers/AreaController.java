@@ -16,7 +16,6 @@ import com.rsr.entity.services.AreaService;
 @RequestMapping("/area")
 public class AreaController {
 
-
 	@Autowired
 	IArea areaRepository;
 
