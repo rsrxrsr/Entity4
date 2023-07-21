@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-public class JwtSecurityConfig {
+public class SecurityConfig {
 	
 /*  Basic Security Hard Code  
     @Bean

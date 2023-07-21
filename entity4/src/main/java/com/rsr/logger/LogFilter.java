@@ -16,9 +16,6 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rsr.entity.model.Log;
-import com.rsr.entity.repository.ILog;
-
 @Component("loggerFilter")
 @WebFilter(urlPatterns = {"/*", "/restapi/*"})
 public class LogFilter implements Filter {
@@ -46,7 +43,7 @@ public class LogFilter implements Filter {
         		getUsername(req.getUserPrincipal()),
         		((HttpServletResponse) response).getStatus()
         		);
-        if (req.getMethod().contentEquals("POST")) {
+        if (req.getMethod().contentEquals("POST") && !req.getRequestURI().contains("/file/upload")) {
         	logger.info("*** ResponseBody:" + getResponsePayload(responseWrapper));
     		log.setBody(getResponsePayload(responseWrapper));
         }

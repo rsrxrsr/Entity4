@@ -1,4 +1,4 @@
-package com.rsr.entity.model;
+package com.rsr.logger;
 
 import java.sql.Timestamp;
 
