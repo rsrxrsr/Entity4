@@ -3,8 +3,8 @@ package com.rsr.entity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.context.annotation.ComponentScan;
+//import org.springframework.boot.web.servlet.ServletComponentScan;
+//import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 /*
 //@ServletComponentScan(basePackages={})
@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"com.rsr.entity",
 		"com.rsr.logger",
 		"com.rsr.file",
+		"com.rsr.email",
 		"com.rsr.security.fix"
 		//"com.rsr.security.basic"
 		//"com.rsr.security.jwt"
